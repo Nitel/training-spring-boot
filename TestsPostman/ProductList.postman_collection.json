@@ -1,0 +1,92 @@
+{
+	"info": {
+		"_postman_id": "962a0e5b-86a4-4625-aab7-37dfed74df63",
+		"name": "ProductList",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/Produits/calculerMargeProduit/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/Produits/calculerMargeProduit/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"calculerMargeProduit",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/Produits/calculerMargeProduit/2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/Produits/calculerMargeProduit/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"calculerMargeProduit",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/Produits/trierProduitsParOrdreAlphabetique",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/Produits/trierProduitsParOrdreAlphabetique",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"trierProduitsParOrdreAlphabetique"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/AdminProduits/calculerMargeProduit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/AdminProduits/calculerMargeProduit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"AdminProduits",
+						"calculerMargeProduit"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

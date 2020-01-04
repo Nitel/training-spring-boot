@@ -116,9 +116,8 @@ public class ProductController {
     }
 
     @GetMapping(value = "/Produits/trierProduitsParOrdreAlphabetique")
-    public List<Product>  trierProduitsParOrdreAlphabetique(@RequestBody List<Product> produits) {
-        produits.sort(Comparator.comparing(Product::getNom));
-        return produits;
+    public List<Product>  trierProduitsParOrdreAlphabetique() {
+        return productDao.findAllByOrderByNomAsc();
     }
 
     @GetMapping(value = "/AdminProduits/calculerMargeProduit")

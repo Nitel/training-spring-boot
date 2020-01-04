@@ -2,6 +2,7 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -111,7 +112,7 @@ public class ProductController {
 
     @GetMapping(value = "/Produits/calculerMargeProduit/{productId}")
     public double  calculerMargeProduit(@PathVariable int productId) {
-
+        if(!productDao.exists(productId)) throw new ProduitIntrouvableException("Le produit avec l'id " + productId + " est INTROUVABLE. Écran Bleu si je pouvais.");
         return productDao.findById(productId).getPrix() - productDao.findById(productId).getPrixAchat();
     }
 
@@ -125,6 +126,7 @@ public class ProductController {
         List<Product> list = productDao.findAll();
         List<String> stringList = new ArrayList<>();
         for (Product product : list) {
+            if(product.getPrix() <= 0) throw new ProduitGratuitException("Le produit avec l'id " + product.getId() + " est GRATUIT, pas de marge possible. Écran Bleu si je pouvais.");
             stringList.add(product.toString() + " : " + calculerMargeProduit(product.getId()));
         }
         return stringList;

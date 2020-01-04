@@ -16,6 +16,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -74,6 +76,9 @@ public class ProductController {
         if (productAdded == null)
             return ResponseEntity.noContent().build();
 
+        if (productAdded.getPrix() <= 0)
+            return ResponseEntity.noContent().build();
+
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -101,6 +106,18 @@ public class ProductController {
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
 
         return productDao.chercherUnProduitCher(400);
+    }
+
+    @GetMapping(value = "/Produits/calculerMargeProduit/{productId}")
+    public double  calculerMargeProduit(@PathVariable int productId) {
+
+        return productDao.findById(productId).getPrix() - productDao.findById(productId).getPrixAchat();
+    }
+
+    @GetMapping(value = "/Produits/trierProduitsParOrdreAlphabetique")
+    public List<Product>  trierProduitsParOrdreAlphabetique(@RequestBody List<Product> produits) {
+        produits.sort(Comparator.comparing(Product::getNom));
+        return produits;
     }
 
 

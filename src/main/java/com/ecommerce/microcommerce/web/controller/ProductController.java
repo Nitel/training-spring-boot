@@ -1,18 +1,20 @@
 package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
+import com.ecommerce.microcommerce.dao.UserDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.model.User;
 import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,8 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -32,42 +32,49 @@ public class ProductController {
 
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private UserDao userDao;
+
 
 
     //Récupérer la liste des produits
-
-    @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-
-    public MappingJacksonValue listeProduits() {
+    @RequestMapping(value = "/Produits/{idUser}", method = RequestMethod.GET)
+    public List<Object> listeProduits(int idUser) throws JsonProcessingException {
 
         Iterable<Product> produits = productDao.findAll();
+        User user = userDao.findById(idUser);
 
-        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
 
-        FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
+        List<Object> productList = new ArrayList<>();
+        FilterProvider filterProvider = new SimpleFilterProvider().addFilter("userFilter",
+                !user.isAdmin()?SimpleBeanPropertyFilter.serializeAllExcept("prix", "prixAchat"):SimpleBeanPropertyFilter.serializeAll());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setFilterProvider(filterProvider);
 
-        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
+        for(Product p : produits) {
+            productList.add(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(p));
+        }
 
-        produitsFiltres.setFilters(listDeNosFiltres);
-
-        return produitsFiltres;
+       return productList;
     }
 
 
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
-    @GetMapping(value = "/Produits/{id}")
-
-    public Product afficherUnProduit(@PathVariable int id) {
+    @GetMapping(value = "/Produits/{idUser}/{id}")
+    public String afficherUnProduit(@PathVariable int id, @PathVariable int idUser ) throws JsonProcessingException {
 
         Product produit = productDao.findById(id);
-
+        User user = userDao.findById(idUser);
         if(produit==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
 
-        return produit;
+        FilterProvider filterProvider = new SimpleFilterProvider().addFilter("userFilter",
+                !user.isAdmin()?SimpleBeanPropertyFilter.serializeAllExcept("prix", "prixAchat"):SimpleBeanPropertyFilter.serializeAll());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setFilterProvider(filterProvider);
+
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(produit);
     }
-
-
 
 
     //ajouter un produit
@@ -133,7 +140,5 @@ public class ProductController {
         }
         return stringList;
     }
-
-
 
 }

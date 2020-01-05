@@ -18,6 +18,9 @@ public class User {
         this.admin = admin;
     }
 
+    public User() {
+    }
+
     public int getId() {
         return id;
     }

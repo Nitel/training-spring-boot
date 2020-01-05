@@ -4,13 +4,15 @@ import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.MimeTypeUtils;
@@ -18,10 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -34,23 +35,71 @@ public class ProductController {
     private ProductDao productDao;
 
 
+    @JsonFilter("userFilter")
+    public class ProductEntity implements Serializable {
+        @JsonProperty("id")
+        public int id;
+        @JsonProperty("nom")
+        public String nom;
+        @JsonProperty("prix")
+        public int prix;
+        @JsonProperty("prixAchat")
+        public int prixAchat;
+
+        public ProductEntity() {
+        }
+
+        public ProductEntity(int id, String nom, int prix, int prixAchat) {
+            this.id = id;
+            this.nom = nom;
+            this.prix = prix;
+            this.prixAchat = prixAchat;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getNom() {
+            return nom;
+        }
+
+        public void setNom(String nom) {
+            this.nom = nom;
+        }
+
+        public int getPrix() {
+            return prix;
+        }
+
+        public void setPrix(int prix) {
+            this.prix = prix;
+        }
+
+        public int getPrixAchat() {
+            return prixAchat;
+        }
+
+        public void setPrixAchat(int prixAchat) {
+            this.prixAchat = prixAchat;
+        }
+    }
+
     //Récupérer la liste des produits
-
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-
-    public MappingJacksonValue listeProduits() {
+    public Object listeProduits() {
 
         Iterable<Product> produits = productDao.findAll();
 
-        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
-
-        FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
-
+        FilterProvider filterProvider = new SimpleFilterProvider().addFilter("userFilter",
+                SimpleBeanPropertyFilter.serializeAllExcept("prix"));
         MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
-
-        produitsFiltres.setFilters(listDeNosFiltres);
-
-        return produitsFiltres;
+        produitsFiltres.setFilters(filterProvider);
+        return produitsFiltres.getValue();
     }
 
 
@@ -65,8 +114,6 @@ public class ProductController {
 
         return produit;
     }
-
-
 
 
     //ajouter un produit

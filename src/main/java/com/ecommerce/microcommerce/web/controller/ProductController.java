@@ -57,7 +57,6 @@ public class ProductController {
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
-
     public Product afficherUnProduit(@PathVariable int id) {
 
         Product produit = productDao.findById(id);
@@ -133,7 +132,5 @@ public class ProductController {
         }
         return stringList;
     }
-
-
 
 }

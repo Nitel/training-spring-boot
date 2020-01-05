@@ -1,5 +1,6 @@
 package com.ecommerce.microcommerce.model;
 
+import com.ecommerce.microcommerce.dao.UserDao;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import org.hibernate.validator.constraints.Length;
 
@@ -55,6 +56,10 @@ public class Product {
 
     public int getPrix() {
         return prix;
+    }
+
+    public Integer getPrixForAUser(User user) {
+        return (user.isAdmin())?prix:null;
     }
 
     public void setPrix(int prix) {

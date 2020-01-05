@@ -52,8 +52,8 @@ public class ProductController {
     )
 
     //Récupérer la liste des produits
-    @RequestMapping(value = "/Produits/{idUser}", method = RequestMethod.GET)
-    public List<Object> listeProduits(int idUser) throws JsonProcessingException {
+    @RequestMapping(value = "/Produits/{idUser}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public List<Object> listeProduits(@PathVariable int idUser) throws JsonProcessingException {
 
         Iterable<Product> produits = productDao.findAll();
         User user = userDao.findById(idUser);
@@ -75,7 +75,7 @@ public class ProductController {
 
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
-    @GetMapping(value = "/Produits/{idUser}/{id}")
+    @GetMapping(value = "/Produits/{idUser}/{id}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public String afficherUnProduit(@PathVariable int id, @PathVariable int idUser ) throws JsonProcessingException {
 
         Product produit = productDao.findById(id);

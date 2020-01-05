@@ -19,15 +19,14 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
-    //ajouter un produit
-    @PostMapping(value = "/Users")
-    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody User user) {
+    //ajouter un User
+   /* @PostMapping(value = "/User")
+    public ResponseEntity<Void> ajouterUser(@Valid @RequestBody User user) {
 
         User userAdded =  userDao.save(user);
 
         if (userAdded == null)
             return ResponseEntity.noContent().build();
-
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -36,16 +35,12 @@ public class UserController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
-    }
+    } */
 
-    //Récupérer la liste des produits
-
+    //Récupérer la liste des users
     @RequestMapping(value = "/Users", method = RequestMethod.GET)
-
     public MappingJacksonValue listeUsers() {
-
         Iterable<User> users = userDao.findAll();
-
         return new MappingJacksonValue(users);
     }
 

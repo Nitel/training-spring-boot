@@ -12,7 +12,12 @@ public class User {
     @Id
     @GeneratedValue
     private int id;
+
     private boolean admin;
+
+    public User(){
+        admin=false;
+    }
 
     public User(boolean admin) {
         this.admin = admin;

@@ -1,7 +1,10 @@
 package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
+import com.ecommerce.microcommerce.dao.UserDao;
+import com.ecommerce.microcommerce.model.MinimalProduct;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.model.User;
 import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -10,7 +13,6 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.util.MimeTypeUtils;
@@ -20,8 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 
@@ -32,6 +32,8 @@ public class ProductController {
 
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private UserDao userDao;
 
 
     //Récupérer la liste des produits
@@ -66,8 +68,23 @@ public class ProductController {
         return produit;
     }
 
+    //Récupérer un produit par son Id
+    @ApiOperation(value = "Récupère un produit grâce à son ID, et affiche ou non un prix pour celui ci")
+    @GetMapping(value = "/Produits/{idUser}/{id}")
+    public MinimalProduct afficherUnProduitWithAuth(@PathVariable int id, @PathVariable int idUser) {
+
+        Product produit = productDao.findById(id);
+
+        User user = userDao.findById(idUser);
 
 
+        if (produit == null)
+            throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
+
+        if (!user.isAdmin()) {
+            return (Product) new MinimalProduct(produit.getId(), produit.getNom());
+        }else return produit;
+    }
 
     //ajouter un produit
     @PostMapping(value = "/Produits")

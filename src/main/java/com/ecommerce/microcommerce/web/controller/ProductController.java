@@ -6,6 +6,7 @@ import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -24,6 +25,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 
 @Api( description="API pour es opérations CRUD sur les produits.")
@@ -91,15 +93,20 @@ public class ProductController {
 
     //Récupérer la liste des produits
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-    public Object listeProduits() {
+    public List<Object> listeProduits() throws JsonProcessingException {
 
         Iterable<Product> produits = productDao.findAll();
-
+        List<Object> productList = new ArrayList<>();
         FilterProvider filterProvider = new SimpleFilterProvider().addFilter("userFilter",
                 SimpleBeanPropertyFilter.serializeAllExcept("prix"));
-        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
-        produitsFiltres.setFilters(filterProvider);
-        return produitsFiltres.getValue();
+
+        for(Product p : produits) {
+            MappingJacksonValue mjv = new MappingJacksonValue(p);
+            mjv.setFilters(filterProvider);
+            productList.add(mjv.getValue());
+        }
+
+       return productList;
     }
 
 

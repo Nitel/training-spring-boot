@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.created(location).build();
     }
 
-    //Récupérer la liste des produits
+    //Récupérer la liste des users
 
     @RequestMapping(value = "/Users", method = RequestMethod.GET)
 

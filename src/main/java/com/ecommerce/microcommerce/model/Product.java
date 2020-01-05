@@ -1,5 +1,7 @@
 package com.ecommerce.microcommerce.model;
 
+import com.ecommerce.microcommerce.dao.UserDao;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.Entity;
@@ -9,7 +11,7 @@ import javax.validation.constraints.Min;
 
 @Entity
 //@JsonFilter("monFiltreDynamique")
-public class Product extends MinimalProduct{
+public class Product {
 
     @Id
     @GeneratedValue
@@ -19,19 +21,19 @@ public class Product extends MinimalProduct{
     private String nom;
 
     @Min(value = 1)
-    private Integer prix;
+    private int prix;
 
     //information que nous ne souhaitons pas exposer
     private int prixAchat;
 
     //constructeur par défaut
     public Product() {
-        super();
     }
 
     //constructeur pour nos tests
-    public Product(int id, String nom, Integer prix, int prixAchat) {
-        super(id, nom);
+    public Product(int id, String nom, int prix, int prixAchat) {
+        this.id = id;
+        this.nom = nom;
         this.prix = prix;
         this.prixAchat = prixAchat;
     }
@@ -54,6 +56,10 @@ public class Product extends MinimalProduct{
 
     public int getPrix() {
         return prix;
+    }
+
+    public Integer getPrixForAUser(User user) {
+        return (user.isAdmin())?prix:null;
     }
 
     public void setPrix(int prix) {

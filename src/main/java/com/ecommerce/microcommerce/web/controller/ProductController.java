@@ -141,8 +141,11 @@ public class ProductController {
     }
 
     @GetMapping(value = "/Produits/trierProduitsParOrdreAlphabetique", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public List<Product>  trierProduitsParOrdreAlphabetique() {
-        return productDao.findAllByOrderByNomAsc();
+    public String trierProduitsParOrdreAlphabetique() throws JsonProcessingException {
+        FilterProvider f = new SimpleFilterProvider().addFilter("userFilter", SimpleBeanPropertyFilter.serializeAll());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setFilterProvider(f);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(productDao.findAllByOrderByNomAsc());
     }
 
     @GetMapping(value = "/AdminProduits/calculerMargeProduit", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)

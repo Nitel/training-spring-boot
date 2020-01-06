@@ -1,4 +1,4 @@
-public/
+src/main/resources/public/
 target/
 
 \.idea/

@@ -12,7 +12,7 @@ import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 @Entity
-@JsonFilter("userFilter")
+@JsonFilter("monFiltreDynamique")
 public class Product implements Serializable {
 
     @Id

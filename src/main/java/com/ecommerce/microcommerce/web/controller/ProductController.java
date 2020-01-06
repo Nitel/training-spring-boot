@@ -54,23 +54,23 @@ public class ProductController {
 
     //Récupérer la liste des produits
     @RequestMapping(value = "/Produits/{idUser}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public List<Object> listeProduits(@PathVariable int idUser) throws JsonProcessingException {
+    public String listeProduits(@PathVariable int idUser) throws JsonProcessingException {
 
         Iterable<Product> produits = productDao.findAll();
         User user = userDao.findById(idUser);
 
 
-        List<Object> productList = new ArrayList<>();
+        String productList = "[";
         FilterProvider filterProvider = new SimpleFilterProvider().addFilter("userFilter",
                 !user.isAdmin()?SimpleBeanPropertyFilter.serializeAllExcept("prix", "prixAchat"):SimpleBeanPropertyFilter.serializeAll());
         ObjectMapper mapper = new ObjectMapper();
         mapper.setFilterProvider(filterProvider);
 
         for(Product p : produits) {
-            productList.add(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(p));
+            productList+=mapper.writerWithDefaultPrettyPrinter().writeValueAsString(p) + ",";
         }
 
-       return productList;
+       return productList.substring(0, productList.length()-1)+"]";
     }
 
 

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel index.html",
-    "dev": "parcel build -d ../public index.html --no-source-maps"
+    "dev": "parcel index.html",
+    "build": "parcel build -d ../public index.html --no-source-maps"
   },
   "author": "",
   "license": "ISC",

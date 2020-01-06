@@ -2,8 +2,10 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
-import com.google.gson.Gson;
-import org.json.JSONArray;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -13,14 +15,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.anyInt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,6 +42,8 @@ public class ProductControllerTest {
     private Product p3 = new Product(3, "Smart Cooker", 1000, 820);
     private Product p4 = new Product(4, "Chargeur", 0, 2);
     private List<Product> listeProduit;
+    FilterProvider f = new SimpleFilterProvider().addFilter("userFilter", SimpleBeanPropertyFilter.serializeAll());
+    ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {
@@ -96,11 +98,12 @@ public class ProductControllerTest {
         sortedList.add(p3);
         sortedList.add(p1);
         Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(sortedList);
+        mapper.setFilterProvider(f);
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(new Gson().toJson(sortedList)));
+                .andExpect(content().string(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sortedList).trim().replace("\\","")));
 
     }
 
@@ -116,11 +119,12 @@ public class ProductControllerTest {
         sortedList.add(p1);
 
         Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(sortedList);
+        mapper.setFilterProvider(f);
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(new Gson().toJson(sortedList)));
+                .andExpect(content().string(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sortedList).trim().replace("\\","")));
     }
 
     @Test
@@ -135,21 +139,23 @@ public class ProductControllerTest {
         sortedList.add(p1);
 
         Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(sortedList);
+        mapper.setFilterProvider(f);
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(new Gson().toJson(sortedList)));
+                .andExpect(content().string(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sortedList).trim().replace("\\","")));
     }
 
     @Test
     public void trierProduitsParOrdreAlphabetiqueNoCollection_NOK() throws Exception {
         Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(listeProduit);
+        mapper.setFilterProvider(f);
+        String s = null;
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+                .andExpect(status().isOk());
     }
 
     @Test

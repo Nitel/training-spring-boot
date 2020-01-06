@@ -43,6 +43,7 @@ public class ProductController {
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
+            @ApiResponse(code = 406, message = "Not Acceptable"),
             @ApiResponse(code = 500, message = "Internal Server Error"),
             @ApiResponse(code = 501, message = "Not Implemented"),
             @ApiResponse(code = 502, message = "Bad Gateway ou Proxy Error"),

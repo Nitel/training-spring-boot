@@ -1,12 +1,58 @@
 {
 	"info": {
-		"_postman_id": "ebe3b7b7-b4d2-4a57-99fb-f35958a52088",
+		"_postman_id": "451a99cc-362f-49a7-a671-86b408aba50a",
 		"name": "ProductList",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "/Produits/calculerMargeProduit/1",
+			"name": "Voir les produits",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/Produits/:userId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Voir produits ordre alphabétique",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/Produits/trierProduitsParOrdreAlphabetique",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"trierProduitsParOrdreAlphabetique"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Calculer marge produit",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -27,48 +73,7 @@
 			"response": []
 		},
 		{
-			"name": "/Produits/calculerMargeProduit/2",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:9090/Produits/calculerMargeProduit/2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9090",
-					"path": [
-						"Produits",
-						"calculerMargeProduit",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/Produits/trierProduitsParOrdreAlphabetique",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:9090/Produits/trierProduitsParOrdreAlphabetique",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9090",
-					"path": [
-						"Produits",
-						"trierProduitsParOrdreAlphabetique"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/AdminProduits/calculerMargeProduit",
+			"name": "Voir produits avec marge (admin)",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -88,58 +93,7 @@
 			"response": []
 		},
 		{
-			"name": "/Users",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:9090/AdminProduits/calculerMargeProduit",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9090",
-					"path": [
-						"AdminProduits",
-						"calculerMargeProduit"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/Produits",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:9090/AdminProduits/calculerMargeProduit",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "9090",
-					"path": [
-						"AdminProduits",
-						"calculerMargeProduit"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/Produits/{idUser}/{id}",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/Produits/{idUser}/{id} not admin",
+			"name": "Voir produit avec un utilisateur",
 			"request": {
 				"method": "GET",
 				"header": [],

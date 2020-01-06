@@ -1,5 +1,7 @@
 # Projet micro commerce (spring-boot)
 
+![Presentation image](https://image.noelshack.com/fichiers/2020/02/1/1578302666-screenshot-2020-01-06-at-10-24-15.png)
+
 ## Structure
 
 Le projet se découpe en trois dossiers principaux :

@@ -17,19 +17,15 @@ public class Product implements Serializable {
 
     @Id
     @GeneratedValue
-    @JsonProperty("id")
     private int id;
 
     @Length(min=3, max=20, message = "Nom trop long ou trop court. Et oui messages sont plus stylés que ceux de Spring")
-    @JsonProperty("nom")
     private String nom;
 
     @Min(value = 1)
-    @JsonProperty("prix")
     private int prix;
 
     //information que nous ne souhaitons pas exposer
-    @JsonProperty("prixAchat")
     private int prixAchat;
 
     //constructeur par défaut
@@ -79,6 +75,8 @@ public class Product implements Serializable {
     public void setPrixAchat(int prixAchat) {
         this.prixAchat = prixAchat;
     }
+
+    public int getMarge() {return prix - prixAchat;}
 
     @Override
     public String toString() {

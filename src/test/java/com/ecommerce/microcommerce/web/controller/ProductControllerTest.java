@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "admin", password = "admin", roles = {"USER", "ADMIN"})
 public class ProductControllerTest {
 
     @Autowired
@@ -97,13 +100,13 @@ public class ProductControllerTest {
         sortedList.add(p2);
         sortedList.add(p3);
         sortedList.add(p1);
-        Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(sortedList);
+        Mockito.when(productDao.trierProductAlpha()).thenReturn(sortedList);
         mapper.setFilterProvider(f);
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(sortedList).trim().replace("\\","")));
+                .andExpect(content().string(new Gson().toJson(sortedList)));
 
     }
 
@@ -118,7 +121,7 @@ public class ProductControllerTest {
         sortedList.add(p3);
         sortedList.add(p1);
 
-        Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(sortedList);
+        Mockito.when(productDao.trierProductAlpha()).thenReturn(sortedList);
         mapper.setFilterProvider(f);
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")
@@ -138,7 +141,7 @@ public class ProductControllerTest {
         sortedList.add(p3);
         sortedList.add(p1);
 
-        Mockito.when(productDao.findAllByOrderByNomAsc()).thenReturn(sortedList);
+        Mockito.when(productDao.trierProductAlpha()).thenReturn(sortedList);
         mapper.setFilterProvider(f);
 
         mockMvc.perform(get("/Produits/trierProduitsParOrdreAlphabetique")

@@ -33,6 +33,19 @@ import java.util.List;
 @Api( description="API pour es opérations CRUD sur les produits.")
 
 @RestController
+@ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successfully retrieved list"),
+        @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+        @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+        @ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
+        @ApiResponse(code = 406, message = "Not Acceptable"),
+        @ApiResponse(code = 500, message = "Internal Server Error"),
+        @ApiResponse(code = 501, message = "Not Implemented"),
+        @ApiResponse(code = 502, message = "Bad Gateway ou Proxy Error"),
+        @ApiResponse(code = 503, message = "Service Unavailable"),
+        @ApiResponse(code = 504, message = "Gateway Time-out")
+}
+)
 public class ProductController {
 
     @Autowired
@@ -40,22 +53,8 @@ public class ProductController {
     @Autowired
     private UserDao userDao;
 
-
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
-            @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
-            @ApiResponse(code = 406, message = "Not Acceptable"),
-            @ApiResponse(code = 500, message = "Internal Server Error"),
-            @ApiResponse(code = 501, message = "Not Implemented"),
-            @ApiResponse(code = 502, message = "Bad Gateway ou Proxy Error"),
-            @ApiResponse(code = 503, message = "Service Unavailable"),
-            @ApiResponse(code = 504, message = "Gateway Time-out")
-    }
-    )
-
     //Récupérer la liste des produits
+    @ApiOperation(value = "Add an employee")
     @RequestMapping(value = "/Produits", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public MappingJacksonValue listeProduits() {
 
@@ -72,6 +71,7 @@ public class ProductController {
         return produitsFiltres;
     }
 
+    @ApiOperation(value = "Add an employee")
     @RequestMapping(value = "/AdminProduits", method = RequestMethod.GET)
 
     public MappingJacksonValue calculerMargeProduitAdmin() {
@@ -154,8 +154,8 @@ public class ProductController {
     }
 
     @GetMapping(value = "/Produits/trierProduitsParOrdreAlphabetique", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public List<Product> trierProduitsParOrdreAlphabetique() throws JsonProcessingException {
-        return productDao.findAllByOrderByNomAsc();
+    public List<Product> trierProduitsParOrdreAlphabetique() {
+        return productDao.trierProductAlpha();
     }
 
     @GetMapping(value = "/AdminProduits/calculerMargeProduit", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)

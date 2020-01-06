@@ -7,6 +7,7 @@ import com.ecommerce.microcommerce.model.User;
 import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.SerializationUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -54,23 +56,16 @@ public class ProductController {
 
     //Récupérer la liste des produits
     @RequestMapping(value = "/Produits/{idUser}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public List<Object> listeProduits(@PathVariable int idUser) throws JsonProcessingException {
-
+    public String listeProduits(@PathVariable int idUser) throws JsonProcessingException {
         Iterable<Product> produits = productDao.findAll();
         User user = userDao.findById(idUser);
 
-
-        List<Object> productList = new ArrayList<>();
         FilterProvider filterProvider = new SimpleFilterProvider().addFilter("userFilter",
-                !user.isAdmin()?SimpleBeanPropertyFilter.serializeAllExcept("prix", "prixAchat"):SimpleBeanPropertyFilter.serializeAll());
+                !user.isAdmin() ? SimpleBeanPropertyFilter.serializeAllExcept("prix", "prixAchat") : SimpleBeanPropertyFilter.serializeAll());
         ObjectMapper mapper = new ObjectMapper();
         mapper.setFilterProvider(filterProvider);
 
-        for(Product p : produits) {
-            productList.add(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(p));
-        }
-
-       return productList;
+       return mapper.writeValueAsString(produits);
     }
 
 
@@ -78,7 +73,6 @@ public class ProductController {
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{idUser}/{id}", produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public String afficherUnProduit(@PathVariable int id, @PathVariable int idUser ) throws JsonProcessingException {
-
         Product produit = productDao.findById(id);
         User user = userDao.findById(idUser);
         if(produit==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
